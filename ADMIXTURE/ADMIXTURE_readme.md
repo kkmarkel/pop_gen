@@ -17,5 +17,50 @@ mamba install bioconda::admixture
 # Generate the input file in plink format
 plink --vcf /home/data/vcf/$FILE.vcf.gz --make-bed --out $FILE --allow-extra-chr
 ```
+### LD pruning
+```bash
+plink --bfile $FILE --indep-pairwise 50 10 0.1
+# (output indicating number of SNPs targeted for inclusion/exclusion)
+
+plink --bfile $FILE --extract plink.prune.in --make-bed --out prunedData
+```
+### Run ADMIXTURE
+>[!note]- 
+> ADMIXTURE can run with .bed, .ped, or .geno files
+```bash
+admixture prunedData.bed 6
+```
+ADMIXTURE starts running. When it finishes, it will output some estimates:
+```bash
+$ ls
+prunedData.bed prunedData.bim prunedData.fam prunedData.6.Q prunedData.6.P
+```
+There is an output file for each parameter set: **Q (the ancestry fractions)**, and **P (the allele frequencies of the inferred ancestral populations)**  
+**K**-- number of populations that was assumed for the analysis  
+You can run ADMIXTURE on a input file located in another directory, but its output will
+always be put in the current working directory.  
+
+If you also wanted standard errors:
+```bash
+admixture -B prunedData.bed 6
+```
+This will perform point estimation and then will also use a bootstrapping procedure to
+calculate the standard errors. Note that (point-estimation & bootstrapping) takes considerably longer than point-estimation alone, so you will have to be patient. Eventually it
+will finish, yielding point estimates and standard errors:
+```bash
+% ls
+prunedData.6.Q prunedData.6.P prunedData.6.Q_se
+```
+The “_se” file is in the same unadorned file format as the point estimates.
+
+If your analyses are taking a long time, first consider why.   
+* Is your dataset huge? Do
+you really need to analyze all the markers, or can you thin the marker set ([LD_pruning?](#ld-pruning))
+* Larger K => larger time
+* Consider using multithreading
+```bash
+admixture prunedData.bed 6 -j4
+# for four cpu
+```
 ## Links
 [Software manual 1.3.0](https://dalexander.github.io/admixture/admixture-manual.pdf)
