@@ -1,8 +1,13 @@
 # VCF mingling tasks using bcftools
+
 ## Left-align and normalize 
 ```bash
 bcftools norm file.vcf -f ref.fa -m -any --multi-overlaps 0 -Oz -o file.norm.vcf.gz
+```
 ## Remove indels
+```bash
+bcftools view file.vcf --type snps -Oz -o file.snp.vcf.gz
+```
 
 ## Fix alt and ref
 >[!note] Reference allele mismatches are a huge pain in the ass. 
