@@ -37,6 +37,15 @@ paste \
 <(bcftools query -f '[%GT\t]\n' <<FILE>> | awk -v OFS="\t" '{for (i=1;i<=NF;i++) if ($i == "./.") sum[i]+=1 } END {for (i in sum) print i, sum[i] / NR }' | sort -k1,1n | cut -f 2)
 ```
 
+## Liftover
+Using the build from `score` repo
+```bash
+# docker image from this bundle https://software.broadinstitute.org/software/mochawdl/
+docker pull us.gcr.io/mccarroll-mocha/bcftools:1.17-20230919
+```
+
+```
+
 ## Other 
 ### Index fasta file with samtools
 Download fasta file. Check that it is bgzipped correctly. Run
