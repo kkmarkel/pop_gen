@@ -44,6 +44,10 @@ Using the build from `score` repo
 docker pull us.gcr.io/mccarroll-mocha/bcftools:1.17-20230919
 ```
 
+## Merge VCF files
+Create text file with VCF file names, one file name per line
+```bash
+bcftools merge -l vcf.txt -m none -Ou | bcftools sort - -Oz -o file.vcf.gz
 ```
 
 ## Other 
