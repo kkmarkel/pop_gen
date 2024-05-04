@@ -27,6 +27,15 @@ bcftools norm --check-ref e -f /path/to/reference.fasta input.vcf.gz
 #TODO
 - [] Does `bcftools norm ... --check-ref s` work in the same way as `bcftools +fixref ... -m flip-all`?
 
+## Extract the proportion of missing data per sample in a VCF/BCF file
+Simply replace `<<FILE>>` with your properly formated VCF/BCF file name (2 places).
+Required bcftools v. 1.2+.
+
+```shell
+paste \
+<(bcftools query -f '[%SAMPLE\t]\n' <<FILE>> | head -1 | tr '\t' '\n') \
+<(bcftools query -f '[%GT\t]\n' <<FILE>> | awk -v OFS="\t" '{for (i=1;i<=NF;i++) if ($i == "./.") sum[i]+=1 } END {for (i in sum) print i, sum[i] / NR }' | sort -k1,1n | cut -f 2)
+```
 
 ## Other 
 ### Index fasta file with samtools
