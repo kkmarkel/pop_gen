@@ -51,7 +51,9 @@ tabix v62.0_HO_public.vcf.gz
 `-x ID -I +'%CHROM:%POS:%REF:%ALT'` first erases the current ID and then sets it to `CHROM:POS:REF:ALT`
 ```bash
 bcftools norm v62.0_HO_public.vcf.gz -m-any --check-ref ws -f /mnt/d/ref/hg19.ensembl.111/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz | \
-bcftools annotate -x ID -I +'%CHROM:%POS:%REF:%ALT' -Ob -o v62.0_HO_public.bcf
-
-
+bcftools annotate -x ID -I +'%CHROM:%POS:%REF:%ALT' | \
+bcftools norm --rm-dup exact --threads 4 -Ob -o v62.0_HO_public.bcf
+# 584131 variants
+tabix v62.0_HO_public.bcf
 ```
+TA-DA!
